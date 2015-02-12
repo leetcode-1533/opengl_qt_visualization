@@ -5,7 +5,9 @@
 #include<QVector3D>
 #include<QVector>
 #include<glu.h>
-
+#include <gl.h>
+#include "filereader.h"
+#include <QDebug>
 
 class glwidget : public QGLWidget
 {
@@ -18,7 +20,7 @@ public:
      void resizeGL(int w, int h);
 
 private:
-
+     filereader * instruction;
 signals:
 
 public slots:

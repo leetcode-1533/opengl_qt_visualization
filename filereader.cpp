@@ -1,14 +1,10 @@
 #include "filereader.h"
 
-filereader::filereader()
+filereader::filereader(float parameter)
 {
-   // reader_table();
+    reader_table();
     reader_raw();
- //  qDebug()<<data[599][247][247];
-//    QList<float> temp = gen_cubic(0,0,0);
-//    qDebug()<<temp.value(0);
-        interpolation_generator(5000.0);
-  //  qDebug()<<gen_cubic(0,0,0);
+    interpolation_generator(parameter);
 }
 
 float filereader::readfloat(FILE *f){
@@ -60,18 +56,79 @@ QVector3D filereader::interpolation_3d(QVector3D start, QVector3D end, float par
 
 void filereader::interpolation_generator(float parameter){
     QList<float> cubic_temp;
-    QString condition;
+    QString condition; 
+
     int jump = 10;
     for(int x=0;x<xsize-1-jump;x+=jump){
         for(int y=0;y<ysize-1-jump;y+=jump){
             for(int z=0;z<zsize-1-jump;z+=jump){
                 cubic_temp = gen_cubic(x,y,z);
                 condition = gen_condition(parameter,cubic_temp);
-          //      qDebug()<<condition;
+              //  qDebug()<<condition;
+                QStringList con_temp = table.value(condition).trimmed().split(" ");
+                QStringListIterator iter(con_temp);
+
+               //qDebug()<<x<<y<<z;
+                while(iter.hasNext()){
+                  //  qDebug()<<iter.next();
+                    drawlist << call_con(iter.next(),QVector3D::QVector3D(x,y,z),parameter,cubic_temp);
+                }
         }
     }
 }
 }
+QList<QVector3D> filereader::call_con(QString con, QVector3D starter, float parameter, QList<float> cubic){
+    QList<QVector3D> val;
+    QString con_vec1 = con.mid(0,2);
+    val << single_call_con(con_vec1,starter,parameter,cubic);
+    QString con_vec2 = con.mid(2,2);
+    val << single_call_con(con_vec2,starter,parameter,cubic);
+    QString con_vec3 = con.mid(4,2);
+    val << single_call_con(con_vec3,starter,parameter,cubic);
+    return val;
+}
+
+QVector3D filereader::single_call_con(QString con, QVector3D starter,float parameter,QList<float> cubic){
+    QList<QVector3D> container;
+    QList<int> condition; //higher cubic index
+    condition << con.left(1).toInt();
+    condition << con.right(1).toInt();
+
+    QList<int>::iterator iter;
+    float xvalue = starter.x();
+    float yvalue = starter.y();
+    float zvalue = starter.z();
+    for(iter = condition.begin(); iter!= condition.end();++iter){
+        switch (*iter) {
+        case 0:
+            container << starter;
+            break;
+        case 1:
+            container << QVector3D::QVector3D(xvalue+1,yvalue,zvalue);
+            break;
+        case 2:
+            container << QVector3D::QVector3D(xvalue,yvalue+1,zvalue);
+            break;
+        case 3:
+            container << QVector3D::QVector3D(xvalue+1,yvalue+1,zvalue);
+            break;
+        case 4:
+            container << QVector3D::QVector3D(xvalue,yvalue,zvalue+1);
+            break;
+        case 5:
+            container << QVector3D::QVector3D(xvalue+1,yvalue,zvalue+1);
+            break;
+        case 6:
+            container << QVector3D::QVector3D(xvalue+1,yvalue+1,zvalue+1);
+            break;
+        case 7:
+            container << QVector3D::QVector3D(xvalue,yvalue+1,zvalue+1);
+            break;
+        }
+    }
+    return interpolation_3d(container[0],container[1],parameter,cubic[condition[0]],cubic[condition[1]]); // The last two is to get the value
+}
+
 
 QString filereader::gen_condition(float parameter,QList<float> cubic){
     QList<bool> cubic_logic;

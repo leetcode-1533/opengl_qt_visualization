@@ -9,6 +9,7 @@
 #include<fstream>
 #include<QVector>
 #include<QString>
+#include<QStringRef>
 #include <QFile>
 #include <QTextStream>
 #include <QStringList>
@@ -25,7 +26,8 @@
 class filereader
 {
 public:
-    filereader();
+    filereader(float parameter);
+    QList<QList<QVector3D> > drawlist;
 private:
     float readfloat(FILE *f);
     float data[xsize][ysize][zsize];
@@ -42,6 +44,10 @@ private:
 
     void interpolation_generator(float parameter);
     QString gen_condition(float parameter,QList<float> cubic);
+
+    QList<QVector3D> call_con(QString con, QVector3D starter, float parameter,QList<float> cubic);
+    QVector3D single_call_con(QString con, QVector3D starter, float parameter, QList<float> cubic);
+
 };
 
 #endif // FILEREADER_H
