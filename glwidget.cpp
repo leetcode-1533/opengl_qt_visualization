@@ -36,23 +36,24 @@ void glwidget::initializeGL(){
 }
 
 void glwidget::paintGL(){
-    qDebug() << instruction->drawlist[0];
+  //  qDebug() << instruction->drawlist[0];
+    QList<QList<QVector3D> >::iterator iter;
+  //  iter = instruction->drawlist.begin();
+  //  qDebug()<<(*iter)[0];
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
      glLoadIdentity();
      gluLookAt( 150, 100, 350,  0, 0, 0,  0, 1, 0);
 
      glTranslatef(-400, -124, -124);
-
+    for(iter = instruction->drawlist.begin(); iter!= instruction->drawlist.end();++iter){
      glColor3f(1.0, 0.0, 0.0);
      glBegin(GL_TRIANGLES);
-       glVertex3i(0,  0, 0  );
-       glVertex3i(0,0, 300  );
-       glVertex3i(300,0,0 );
+       glVertex3i((*iter)[0].x(),  (*iter)[0].y(), (*iter)[0].z()  );
+       glVertex3i((*iter)[1].x(),  (*iter)[1].y(), (*iter)[1].z()  );
+       glVertex3i((*iter)[2].x(),  (*iter)[2].y(), (*iter)[2].z() );
      glEnd();
-
-
-
+     }
 }
 
 void glwidget::resizeGL(int w, int h){
