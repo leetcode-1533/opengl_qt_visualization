@@ -3,18 +3,20 @@
 filereader::filereader(float parameter, int jump):
     jump(jump)
 {
-    reader_table();
-    reader_raw();
+    reader_table();//read table
+    reader_raw();//read raw data
     interpolation_generator(parameter);
 }
 
 float filereader::readfloat(FILE *f){
+    //used for read signle data from raw file
     float v;
     fread((void*)(&v),sizeof(v),1,f);
     return v;
 }
 
 void filereader::reader_raw(){
+    //read the whole raw file
     FILE * file = fopen("/Users/y1275963/SciVis/scalarGFull.raw","r");
     for(int x=0;x<xsize;x++){
         for(int y=0;y<ysize;y++){
@@ -26,6 +28,7 @@ void filereader::reader_raw(){
 }
 
 void filereader::reader_table(){
+    //read from the table for condition & solution
     QFile file("/Users/y1275963/SciVis/table.txt");
     if(!file.open(QIODevice::ReadOnly)){
         QMessageBox::information(0,"error",file.errorString());
@@ -45,10 +48,12 @@ void filereader::reader_table(){
 }
 
 float filereader::interpolation_single(float start_value, float end_vaule, float start_location, float end_location, float parameter){
+    // generall interpolation
     return start_location + (end_location-start_location)*(parameter-start_value)/(end_vaule-start_value);
 }
 
 QVector3D filereader::interpolation_3d(QVector3D start, QVector3D end, float parameter, float start_value, float end_value){
+   // Interpolation along 3 axises
     float xtemp = interpolation_single(start_value,end_value,start.x(),end.x(),parameter);
     float ytemp = interpolation_single(start_value,end_value,start.y(),end.y(),parameter);
     float ztemp = interpolation_single(start_value,end_value,start.z(),end.z(),parameter);
@@ -56,6 +61,11 @@ QVector3D filereader::interpolation_3d(QVector3D start, QVector3D end, float par
 }
 
 void filereader::interpolation_generator(float parameter){
+    // Main list generator function:
+    // 1. Using gen_cubic to retrive data
+    // 2. Using gen_condition to get the condition code
+    // 3. check the table, refer to each solution and do the interpolation using call_con
+    // 4. push the data into a container called drawlist
     QList<float> cubic_temp;
     QString condition; 
 
@@ -78,6 +88,9 @@ void filereader::interpolation_generator(float parameter){
 }
 }
 QList<QVector3D> filereader::call_con(QString con, QVector3D starter, float parameter, QList<float> cubic){
+   // Genearting 3 vectors data. single_call_con is the sub function
+    // split the 6 number in 3 gourp. Process individually
+    // sum up in a list.
     QList<QVector3D> val;
     QString con_vec1 = con.mid(0,2);
     val << single_call_con(con_vec1,starter,parameter,cubic);
@@ -89,6 +102,11 @@ QList<QVector3D> filereader::call_con(QString con, QVector3D starter, float para
 }
 
 QVector3D filereader::single_call_con(QString con, QVector3D starter,float parameter,QList<float> cubic){
+   // Refer to the condition to do the single interpolation, generate a single vertex data
+    // 1. using container to store the x,y,z coordinates from start -> end
+    // 2. using condition to store the start_vectex_index -> end_vertex_index
+    // 3. using interpolation_3d to do the interpolation
+    // 4. return single vertex 3d coordinates
     QList<QVector3D> container;
     QList<int> condition; //higher cubic index
     condition << con.left(1).toInt();
@@ -131,6 +149,8 @@ QVector3D filereader::single_call_con(QString con, QVector3D starter,float param
 
 
 QString filereader::gen_condition(float parameter,QList<float> cubic){
+    // According to the cubic value. According to the parameter. Finding the vertex index which is higher that the parameter
+    // transfer the coordinators into string, which is the condition indicator.
     QList<bool> cubic_logic;
     float float_temp;
     QList<int> con_list;
@@ -154,6 +174,7 @@ QString filereader::gen_condition(float parameter,QList<float> cubic){
 }
 
 QList<float> filereader::gen_cubic( int x, int y, int z){
+    // get the vertex value. Inefficient.
     QList<float> cubic;
     float val0 = data[x][y][z];
     float val1 = data[x+1][y][z];

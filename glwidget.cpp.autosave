@@ -47,6 +47,7 @@ void glwidget::paintGL(){
      gluLookAt( 0, 100, 350,  0, 0, 0,  0, 1, 0);
 
      glTranslatef(-400, -124, -124);
+     // retrie the data from drawlist 
     for(iter = instruction->drawlist.begin(); iter!= instruction->drawlist.end();++iter){
      glColor3f(1.0, 0.0, 0.0);
      glBegin(GL_TRIANGLES);
