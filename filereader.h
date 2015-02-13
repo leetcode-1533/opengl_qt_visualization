@@ -26,9 +26,10 @@
 class filereader
 {
 public:
-    filereader(float parameter);
+    filereader(float parameter,int jump);
     QList<QList<QVector3D> > drawlist;
 private:
+    int jump;
     float readfloat(FILE *f);
     float data[xsize][ysize][zsize];
 

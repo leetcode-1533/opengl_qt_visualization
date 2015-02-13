@@ -4,7 +4,7 @@ glwidget::glwidget(QWidget *parent) :
     QGLWidget(parent)
 {
     setAutoBufferSwap(true);
-    instruction = new filereader(5000.0);
+    instruction = new filereader(17000.0,5);
 
 }
 

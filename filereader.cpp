@@ -1,6 +1,7 @@
 #include "filereader.h"
 
-filereader::filereader(float parameter)
+filereader::filereader(float parameter, int jump):
+    jump(jump)
 {
     reader_table();
     reader_raw();
@@ -58,7 +59,6 @@ void filereader::interpolation_generator(float parameter){
     QList<float> cubic_temp;
     QString condition; 
 
-    int jump = 10;
     for(int x=0;x<xsize-1-jump;x+=jump){
         for(int y=0;y<ysize-1-jump;y+=jump){
             for(int z=0;z<zsize-1-jump;z+=jump){
@@ -107,10 +107,10 @@ QVector3D filereader::single_call_con(QString con, QVector3D starter,float param
             container << QVector3D::QVector3D(xvalue+1,yvalue,zvalue);
             break;
         case 2:
-            container << QVector3D::QVector3D(xvalue,yvalue+1,zvalue);
+            container << QVector3D::QVector3D(xvalue+1,yvalue+1,zvalue);
             break;
         case 3:
-            container << QVector3D::QVector3D(xvalue+1,yvalue+1,zvalue);
+            container << QVector3D::QVector3D(xvalue,yvalue+1,zvalue);
             break;
         case 4:
             container << QVector3D::QVector3D(xvalue,yvalue,zvalue+1);
