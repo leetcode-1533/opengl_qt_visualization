@@ -18,9 +18,9 @@ float filereader::readfloat(FILE *f){
 void filereader::reader_raw(){
     //read the whole raw file
     FILE * file = fopen("/Users/y1275963/SciVis/scalarGFull.raw","r");
-    for(int x=0;x<xsize;x++){
+    for(int z=0;z<zsize;z++){
         for(int y=0;y<ysize;y++){
-            for(int z=0;z<zsize;z++){
+            for(int x=0;x<xsize;x++){
                 data[x][y][z] = readfloat(file);
             }
         }
@@ -161,7 +161,7 @@ QString filereader::gen_condition(float parameter,QList<float> cubic){
     }
 
 
-    for(int i =0;i<con_list.size();i++){
+    for(int i =0;i< con_list.size();i++){
         string += QString::number(con_list[i]);
     }
     return string;

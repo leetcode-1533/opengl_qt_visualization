@@ -5,7 +5,7 @@ glwidget::glwidget(QWidget *parent) :
 {
     setAutoBufferSwap(true);
     // The first coordinate is for isovalue and the second one is for the interval
-    instruction = new filereader(2000.0,5);
+    instruction = new filereader(2000.0,2);
 
 }
 
