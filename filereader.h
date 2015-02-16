@@ -22,6 +22,7 @@
 #include <QList>
 
 #include <QDebug>
+#include <QQueue>
 
 class filereader
 {
@@ -32,6 +33,7 @@ private:
     int jump;
     float readfloat(FILE *f);
     float data[xsize][ysize][zsize];
+    QQueue<float> queue;
 
     QHash<QString,QString> table;
 
@@ -42,6 +44,9 @@ private:
     QVector3D interpolation_3d(QVector3D start, QVector3D end, float parameter, float start_value,float end_value);
 
     QList<float> gen_cubic(int x, int y, int z);
+
+    void smart_gen_cubic();
+    void pre_fill_queue();
 
     void interpolation_generator(float parameter);
     QString gen_condition(float parameter,QList<float> cubic);

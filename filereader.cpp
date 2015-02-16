@@ -3,9 +3,10 @@
 filereader::filereader(float parameter, int jump):
     jump(jump)
 {
-    reader_table();//read table
-    reader_raw();//read raw data
-    interpolation_generator(parameter);
+//    reader_table();//read table
+//    reader_raw();//read raw data
+//    interpolation_generator(parameter);
+    pre_fill_queue();
 }
 
 float filereader::readfloat(FILE *f){
@@ -183,3 +184,15 @@ QList<float> filereader::gen_cubic( int x, int y, int z){
     return cubic;
 }
 
+void filereader::smart_gen_cubic(){
+
+}
+
+void filereader::pre_fill_queue(){
+    int maxlen = xsize*ysize+xsize+2;
+    for(int i = 0; i < maxlen ; i++){
+        queue.enqueue(i);
+        qDebug() << i;
+    }
+    qDebug() << maxlen;
+}

@@ -17,7 +17,7 @@ if __name__ == "__main__":
     while len(test) != test.maxlen:
         test.append(i)
         i = i + 1
-        
+    print test
     for z in range(z_len - 1):
         for y in range(y_len - 1):
             for x in range(x_len - 1):
